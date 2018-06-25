@@ -1,8 +1,10 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 using UnityEngine;
 
 public class PlayerMovementSystem : ComponentSystem {
     private struct Filter {
+        public Transform Transform;
         public InputComponent InputComponent;
     }
 
@@ -10,7 +12,12 @@ public class PlayerMovementSystem : ComponentSystem {
         var deltaTime = Time.deltaTime;
 
         foreach (var entity in GetEntities<Filter>()) {
-            // Rotate Player
+            Quaternion rot = entity.Transform.rotation *
+                Quaternion.AngleAxis(deltaTime * entity.InputComponent.Direction * entity.InputComponent.Speed,
+                    Vector3.back);
+            
+            if (rot.eulerAngles.z < 270 && rot.eulerAngles.z > 90) continue;
+            entity.Transform.rotation = rot;
         }
     }
 }

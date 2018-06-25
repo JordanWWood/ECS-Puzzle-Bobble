@@ -1,7 +1,6 @@
-﻿using Unity.Entities;
+﻿using UnityEngine;
 
-namespace Assets.Code.Components {
-    public class Bubble : IComponentData {
-
-    }
+public class BubbleComponent : MonoBehaviour {
+    public bool IsHeld = true;
+    public Vector2 direction = new Vector2(1, 1);
 }
