@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using Unity.Entities;
+﻿using Unity.Entities;
 using UnityEngine;
 
 /**
@@ -8,36 +6,45 @@ using UnityEngine;
  * by the player
  */
 public class BubbleMovementSystem : ComponentSystem {
-    private struct Filter {
+    private struct BubbleFilter {
         public Transform Transform;
         public BubbleComponent BubbleComponent;
         public SpeedComponent SpeedComponent;
+        public CollidableComponent CollidableComponent;
     }
 
     private struct CollisionFilter {
         public Transform Transform;
-        public StickComponent StickComponent;
+        public CollidableComponent CollidableComponent;
     }
 
     protected override void OnUpdate() {
-        var deltaTime = Time.deltaTime;
+        foreach (var entity in GetEntities<BubbleFilter>()) {
+            if (!entity.BubbleComponent.CanMove) continue;
+            
+            foreach (var collidableEntities in GetEntities<CollisionFilter>()) {
+                if (collidableEntities.CollidableComponent.IsCollidable) {
+                    var bx = entity.Transform.position.x;
+                    var wx = collidableEntities.Transform.position.x;
 
-        foreach (var entity in GetEntities<Filter>()) {
-            if (entity.BubbleComponent.CanMove) {
-                foreach (var collidableEntities in GetEntities<CollisionFilter>()) {
-                    float bx = entity.Transform.position.x;
-                    float wx = collidableEntities.Transform.position.x;
-
-                    Debug.Log(Mathf.Abs(bx - wx));
-                    if (Mathf.Abs(bx - wx) < .5) {
+                    if (Mathf.Abs(bx - wx) < .5)
                         entity.BubbleComponent.Direction.x = -entity.BubbleComponent.Direction.x;
+                } else {
+                    if (!collidableEntities.CollidableComponent.IsSticky) continue;
+                    
+                    var by = entity.Transform.position.y;
+                    var wy = collidableEntities.Transform.position.y;
+
+                    if (Mathf.Abs(by - wy) < .5) {
+                        entity.BubbleComponent.CanMove = false;
+                        entity.CollidableComponent.IsSticky = true;
                     }
                 }
-
-                entity.Transform.position +=
-                    new Vector3(entity.BubbleComponent.Direction.x, entity.BubbleComponent.Direction.y) *
-                    Time.deltaTime * entity.SpeedComponent.Speed;
             }
+
+            entity.Transform.position +=
+                new Vector3(entity.BubbleComponent.Direction.x, entity.BubbleComponent.Direction.y) *
+                Time.deltaTime * entity.SpeedComponent.Speed;
         }
     }
 }

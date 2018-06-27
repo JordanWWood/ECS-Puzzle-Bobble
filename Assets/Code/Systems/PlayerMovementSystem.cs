@@ -16,7 +16,7 @@ public class PlayerMovementSystem : ComponentSystem {
         var deltaTime = Time.deltaTime;
 
         foreach (var entity in GetEntities<Filter>()) {
-            Quaternion rot = entity.Transform.rotation *
+            var rot = entity.Transform.rotation *
                 Quaternion.AngleAxis(deltaTime * entity.InputComponent.Direction * entity.SpeedComponent.Speed,
                     Vector3.back);
             
@@ -25,3 +25,4 @@ public class PlayerMovementSystem : ComponentSystem {
         }
     }
 }
+

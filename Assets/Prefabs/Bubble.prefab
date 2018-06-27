@@ -23,6 +23,8 @@ GameObject:
   - component: {fileID: 23884198011158522}
   - component: {fileID: 135457797313290752}
   - component: {fileID: 114743971533415118}
+  - component: {fileID: 114707879096505578}
+  - component: {fileID: 114084916662828278}
   - component: {fileID: 114118666398553582}
   m_Layer: 0
   m_Name: Bubble
@@ -86,6 +88,19 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1879436869408172}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114084916662828278
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1879436869408172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4d0181cc0938d644a5c16375ef26df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsCollidable: 0
+  IsSticky: 0
 --- !u!114 &114118666398553582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -97,6 +112,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf10cdea1344482e91a4f2b58506b77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114707879096505578
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1879436869408172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3376f1279236fa42a25366a045f6b64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 15
 --- !u!114 &114743971533415118
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -111,6 +138,7 @@ MonoBehaviour:
   CanMove: 0
   BeenHeld: 0
   Direction: {x: 1, y: 1}
+  ColourIndex: -1
 --- !u!135 &135457797313290752
 SphereCollider:
   m_ObjectHideFlags: 1
