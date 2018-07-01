@@ -23,7 +23,19 @@ public class BubbleMovementSystem : ComponentSystem {
             if (!entity.BubbleComponent.CanMove) continue;
             
             foreach (var collidableEntities in GetEntities<CollisionFilter>()) {
-                if (collidableEntities.CollidableComponent.IsCollidable) {
+                if (collidableEntities.CollidableComponent.IsCollidable && collidableEntities.CollidableComponent.IsSticky) {
+                    var bx = entity.Transform.position.x;
+                    var wx = collidableEntities.Transform.position.x;
+                    
+                    var by = entity.Transform.position.y;
+                    var wy = collidableEntities.Transform.position.y;
+
+                    if (!(Mathf.Abs(by - wy) < .5) || !(Mathf.Abs(bx - wx) < .5)) continue;
+
+                    entity.BubbleComponent.CanMove = false;
+                    entity.CollidableComponent.IsSticky = true;
+                    entity.CollidableComponent.IsCollidable = true;
+                } else if (collidableEntities.CollidableComponent.IsCollidable) {
                     var bx = entity.Transform.position.x;
                     var wx = collidableEntities.Transform.position.x;
 
@@ -35,10 +47,18 @@ public class BubbleMovementSystem : ComponentSystem {
                     var by = entity.Transform.position.y;
                     var wy = collidableEntities.Transform.position.y;
 
-                    if (Mathf.Abs(by - wy) < .5) {
-                        entity.BubbleComponent.CanMove = false;
-                        entity.CollidableComponent.IsSticky = true;
-                    }
+                    if (!(Mathf.Abs(by - wy) < .5)) continue;
+                    
+                    entity.BubbleComponent.CanMove = false;
+                    entity.CollidableComponent.IsSticky = true;
+                    entity.CollidableComponent.IsCollidable = true;
+                }
+
+                if (!entity.BubbleComponent.CanMove && entity.CollidableComponent.IsCollidable &&
+                    entity.CollidableComponent.IsSticky) {
+                    var startPos = entity.Transform.position;
+                    
+                    
                 }
             }
 

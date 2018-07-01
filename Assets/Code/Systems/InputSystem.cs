@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 using UnityEngine;
 
 /**
@@ -21,8 +22,11 @@ public class InputSystem : ComponentSystem {
         public SpeedComponent SpeedComponent;
     }
 
+    // Dependancy injection to find GameObjects that match our structs.
     [Inject] private PlayerData _playerData;
     [Inject] private BubbleData _bubbleData;
+
+    private long _lastRelease = 0;
 
     protected override void OnUpdate() {
         var horizontal = Input.GetAxis("Horizontal");
@@ -32,10 +36,14 @@ public class InputSystem : ComponentSystem {
             _playerData.InputComponents[i].Direction = horizontal;
 
         for (var i = 0; i < _bubbleData.Length; i++) {
-            if (_bubbleData.BubbleComponents[i].BeenHeld != false || release != 1) continue;
+            // Only allow the player to release a bubble once every 1.75 seconds and make sure to only act upon the bubble the player is holding
+            if (_bubbleData.BubbleComponents[i].BeenHeld != false || release != 1 ||
+                !(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _lastRelease >= 1750)) continue;
 
             _bubbleData.BubbleComponents[i].CanMove = true;
             _bubbleData.BubbleComponents[i].BeenHeld = true;
+
+            _lastRelease = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             /**
              * There should be only one player object so it should be safe to assume the first one is okay.
